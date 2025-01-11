@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+    
+    environment {
+        DOCKER_REGISTRY = 'docker.io'  // Docker Hub registry URL
+        IMAGE_NAME = 'my-python-app'   // Image name in Docker Hub
+        TAG_NAME = 'latest'            // Default tag name (you can customize it)
+        DOCKERHUB_USERNAME = 'uthaya1997'  // Docker Hub username
+        DOCKERHUB_TOKEN = credentials('dockerhub-token')  // Reference to the Docker token stored in Jenkins
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                // Clone the repository from GitHub to Jenkins workspace
+                git url: 'https://github.com/HeyBlue24/azuredevops.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build the Docker image from the Dockerfile in the repository
+                    sh 'docker build -t ${DOCKER_REGISTRY}/${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${TAG_NAME} .'
+                }
+            }
+        }
+
+        stage('Login to Docker Hub') {
+            steps {
+                script {
+                    // Log in to Docker Hub using the stored token
+                    sh "echo ${DOCKERHUB_TOKEN} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin"
+                }
+            }
+        }
+
+        stage('Push Docker Image to Docker Hub') {
+            steps {
+                script {
+                    // Push the built image to Docker Hub
+                    sh 'docker push ${DOCKER_REGISTRY}/${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${TAG_NAME}'
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Docker image pushed successfully to Docker Hub!"
+        }
+
+        failure {
+            echo "Build or Push failed. Please check the logs."
+        }
+    }
+}
