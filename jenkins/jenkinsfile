@@ -2,17 +2,17 @@ pipeline {
     agent any
     
     environment {
-        DOCKER_REGISTRY = 'docker.io'  // Docker Hub registry URL
-        IMAGE_NAME = 'my-python-app'   // Image name in Docker Hub
-        TAG_NAME = 'latest'            // Default tag name (you can customize it)
-        DOCKERHUB_USERNAME = 'uthaya1997'  // Docker Hub username
+        DOCKER_REGISTRY = 'docker.io'         // Docker Hub registry URL
+        IMAGE_NAME = 'my-python-app'          // Image name in Docker Hub
+        TAG_NAME = 'latest'                   // Default tag name (you can customize it)
+        DOCKERHUB_USERNAME = 'uthaya1997'     // Docker Hub username
         DOCKERHUB_TOKEN = credentials('dockerhub-token')  // Reference to the Docker token stored in Jenkins
     }
 
     stages {
         stage('Clone Repository') {
             steps {
-                // Clone the repository from GitHub to Jenkins workspace
+                // Clone the public GitHub repository to Jenkins workspace
                 git url: 'https://github.com/HeyBlue24/azuredevops.git'
             }
         }
