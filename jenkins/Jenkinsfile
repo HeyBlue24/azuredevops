@@ -13,7 +13,8 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 // Clone the public GitHub repository to Jenkins workspace
-                git url: 'https://github.com/HeyBlue24/azuredevops.git'
+                git url: 'https://github.com/HeyBlue24/azuredevops.git', branch: 'main'
+
             }
         }
 
